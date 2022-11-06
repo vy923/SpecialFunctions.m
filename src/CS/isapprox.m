@@ -1,7 +1,7 @@
 function mask = isapprox(x,y,atol,rtol) 
 %  ------------------------------------------------------------------------------------------------
 %   DESCRIPTION
-%       mask = <strong>isapprox</strong>(x,y,atol,rtol)
+%       mask = ISAPPROX(x,y,atol,rtol)
 %
 %       See also:       gettol
 %
@@ -14,8 +14,8 @@ function mask = isapprox(x,y,atol,rtol)
 %       mask            boolean array |x-y| <= atol + rtol*max(|x|,|y|)
 %
 %   VERSION
-%       v1.1 / 31.10.22 / --        
-%       v1.0 / 30.10.22 / V.Yotov
+%   v1.1 / 31.10.22 / --    optimisation and bugfixes for Inf/NaN comparisons       
+%   v1.0 / 30.10.22 / V.Y.
 %  ------------------------------------------------------------------------------------------------
 
 % Faster than arguments block

@@ -1,7 +1,7 @@
 function tol = gettol(x,y,atol,rtol) 
 %  ------------------------------------------------------------------------------------------------
 %   DESCRIPTION
-%       tol = <strong>gettol</strong>(x,y,atol,rtol)
+%       tol = GETTOL(x,y,atol,rtol)
 %       Returns a scalar or an array atol + rtol*min(|x|,|y|)
 %
 %       See also:       isapprox
@@ -12,7 +12,7 @@ function tol = gettol(x,y,atol,rtol)
 %       rtol            default = sqrt(eps)
 %
 %   VERSION
-%       v1.0 / 30.10.22 / V.Yotov
+%   v1.0 / 30.10.22 / V.Y.
 %  ------------------------------------------------------------------------------------------------
 
 % Faster than arguments block

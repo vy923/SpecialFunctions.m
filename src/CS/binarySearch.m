@@ -16,8 +16,7 @@ function x = binarySearch(A,x,leftmost,atol,rtol)
 %       leftmost        either scalar or array of the same size as x [default = true]
 %           true        leftmost binary search
 %           false       rightmost binary search
-%       atol            absolute tolerance, [default = 0]
-%       rtol            relative tolerance, [default = 0]
+%       atol/rtol       absolute/relative tolerance, [default = 0]
 %
 %   OUTPUTS
 %       idx             array of indices in A for values x
@@ -26,9 +25,13 @@ function x = binarySearch(A,x,leftmost,atol,rtol)
 %            < 0        rank of x(i) in A, but no exact match (within tol)
 %            > 0        index s.t. A(idx(i)) is approx. x(i) (within tol)
 %
+%   UPDATES
+%       - write examples
+%
 %   VERSION
-%       v1.1 / 02.11.22 / --        optimisation, robust handling of +/-Inf and NaN
-%       v1.0 / 30.10.22 / V.Yotov
+%   v1.2 / 04.11.22 / --    bugfix in case branching; examples at bottom of code
+%   v1.1 / 02.11.22 / --    optimisation, robust handling of +/-Inf and NaN
+%   v1.0 / 30.10.22 / V.Y.
 %  ------------------------------------------------------------------------------------------------
 
 % Faster than arguments block
@@ -36,7 +39,7 @@ if nargin < 3 || isempty(leftmost),     leftmost = true;        end
 if nargin < 4 || isempty(atol),         atol = 0;               end
 if nargin < 5 || isempty(rtol),         rtol = 0;               end
 
-% Bounds, number of elements
+% Array bounds, element counts
 n = numel(A);
 nr = n;                                                                                     % index of last finite value
 nl = 1;                                                                                     % index of first finite value
@@ -72,7 +75,7 @@ if nl <= nr && A(nl)==-Inf
     nspec = -nni;
     lnegi = 1;
 end
-remspec = npn + npi + nni;
+rems = npn + npi + nni;
 
 % First/last finite values of A
 if nl <= nr
@@ -88,19 +91,26 @@ for i = 1:numel(x)
     axi = abs(xi);
     lmi = leftmost(lms + ~lms*i);                                                           % k==1 if leftmost is a scalar, else k==i
 
-    if remspec > 0                                                                          % directly assign indices of non-finite xi
+    if rems > 0                                                                             % directly assign indices of non-finite xi
         if xi==Inf
             x(i) = rposi - lmi*(npi-1);
+            rems = rems - 1;
+            continue
         elseif xi==-Inf
             x(i) = lnegi + ~lmi*(nni-1);
+            rems = rems - 1;
+            continue
         elseif isnan(xi)
             x(i) = rnan - lmi*(npn-1);
+            rems = rems - 1;
+            continue
         elseif nl > nr                                                                      % finite xi in a +/-Inf/NaN only array
             x(i) = nspec;
+            rems = rems - 1;
+            continue
         end
-        remspec = remspec - 1;
-        continue
-    elseif xi < AL - atol - rtol*min(abs(AL),axi)                                           % xi < min(A) - tol
+    end
+    if xi < AL - atol - rtol*min(abs(AL),axi)                                               % xi < min(A) - tol
         x(i) = lnoor;                                                                     
     elseif xi > AR + atol + rtol*min(abs(AR),axi)                                           % xi > max(A) + tol
         x(i) = rnoor;
