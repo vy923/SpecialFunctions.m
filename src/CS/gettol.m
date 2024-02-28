@@ -24,7 +24,7 @@ if nargin < 3 || isempty(atol)
 end
 
 % First case avoids most computations
-if rtol==0                                                  
+if rtol == 0                                                  
     tol = atol;
 else
     tol = atol + rtol*min(abs(x),abs(y));
